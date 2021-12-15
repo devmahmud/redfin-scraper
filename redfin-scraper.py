@@ -19,7 +19,10 @@ def parse(address):
 
     result = json.loads(response.text.replace("{}&&{", '{'))
 
-    relative_path = result.get('payload').get('exactMatch').get('url')
+    relative_path = result.get('payload', {}).get('exactMatch', {}).get('url')
+    if relative_path is None:
+        relative_path = result.get('payload').get(
+            'sections', [])[0].get('rows', [])[0].get('url')
 
     if not relative_path:
         return None
